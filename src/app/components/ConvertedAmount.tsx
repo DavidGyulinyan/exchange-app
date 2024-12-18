@@ -9,7 +9,7 @@ interface ConvertedAmountProps {
 export default function ConvertedAmount({ currencies, toCurrency, convertedAmount }: ConvertedAmountProps) {  
   return (
     <Typography variant="h5">
-      {`Converted Amount: ${+convertedAmount || "00.00"} ${currencies.find((c: any) => c.currencyName === toCurrency)?.currencySign}`}
+      {`Converted Amount: ${+convertedAmount || "00.00"}`}
     </Typography>
   );
 };

@@ -16,28 +16,59 @@ import ConvertedAmount from "./components/ConvertedAmount";
 import SwapButton from "./components/SwapButton";
 
 import { useEffect, useState } from "react";
-
-// Mock currency data (to be replaced with API call)
-const currencies = [
-  {
-    id: 1,
-    currencyName: "AMD - Armenian Dram",
-    currencySign: "֏",
-    flag: "am",
-  },
-  {
-    id: 2,
-    currencyName: "USD - US Dollar",
-    currencySign: "$",
-    flag: "us",
-  },
-];
+import Footer from "./components/Footer";
+import Loading from "./components/Loading";
 
 export default function Home() {
-  const [amount, setAmount] = useState('');
-  const [fromCurrency, setFromCurrency] = useState<string>(currencies[1]?.currencyName);
-  const [toCurrency, setToCurrency] = useState<string>(currencies[0]?.currencyName);
-  const [convertedAmount, setConvertedAmount] = useState("");
+  const [amount, setAmount] = useState<string>('');
+  const [convertedAmount, setConvertedAmount] = useState<string>("");
+  const [currenciesData, setCurrenciesData] = useState<Data>();
+  const [fromCurrency, setFromCurrency] = useState<string>("AMD");
+  const [toCurrency, setToCurrency] = useState<string>("USD");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currencyList, setCurrencyList] = useState<string[]>([]);
+
+  interface Data {
+    result: string;
+    documentation: string;
+    terms_of_use: string;
+    time_last_update_unix: number;
+    time_last_update_utc: string;
+    time_next_update_unix: number;
+    time_next_update_utc: string;
+    base_code: string;
+    conversion_rates: {
+      [key: string]: number;
+    };
+  };
+
+  //Request to the api to get exchange rates
+  useEffect(() => {
+
+    const getExchangeData = () => {
+      fetch(`https://v6.exchangerate-api.com/v6/202d201dda9ebd5a8b2d3591/latest/USD`)
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP error: Status ${response.status}`);
+          return response.json()
+        })
+        .then((data) => {
+          setCurrenciesData(data);
+          setCurrencyList(Object.keys(data.conversion_rates));
+          setLoading(false);
+
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoading(false);
+
+        })
+    };
+
+    getExchangeData();
+  }, []);
+
+  // console.log(currenciesData?.conversion_rates);
+
 
   const handleSwap = (): void => {
     setFromCurrency(toCurrency);
@@ -46,157 +77,175 @@ export default function Home() {
 
   // Placeholder conversion logic
   const handleConvert = (): void => {
-    if (fromCurrency === "USD - US Dollar" && toCurrency === "AMD - Armenian Dram") {
-      setConvertedAmount((parseFloat(amount) * 394.86).toFixed(2));
-    } else if (fromCurrency === "AMD - Armenian Dram" && toCurrency === "USD - US Dollar") {
-      setConvertedAmount((parseFloat(amount) / 394.86).toFixed(2));
-    } else {
-      setConvertedAmount(amount);
+    if (currenciesData && amount) {
+      const fromRate = currenciesData.conversion_rates[fromCurrency];
+      const toRate = currenciesData.conversion_rates[toCurrency];
+      const convertedValue = (parseFloat(amount) / fromRate) * toRate;
+      setConvertedAmount(convertedValue.toFixed(2));
     }
   };
 
+
   useEffect(() => {
     handleConvert();
-  }, [handleConvert])
+  }, [handleConvert]);
 
   return (
+
     <div
       style={{
         width: "100%",
-        height: "100%",
+        height: `${loading ? "100vh" : "100%"}`,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyContent: `${loading ? "center" : "space-between"}`,
         alignItems: "center",
-        gap:"30px"
+        gap: "30px"
       }}
     >
-      <Header />
-      <Typography
-        variant="h2"
-        sx={{
-          fontSize: {
-            xs: "1.5rem",
-            sm: "2rem",
-            md: "2.5rem",
-            lg: "3rem"
-          }
-        }}
+      {loading ? <Loading /> :
+        <>
 
-      >{`Convert ${fromCurrency} to ${toCurrency}`}</Typography>
-      <Typography
-        variant="h4"
-        sx={{
-          fontSize: {
-            xs: "1rem",
-            sm: "1.7rem"
-          }
-        }}
-      >Currency Converter</Typography>
+          <Header />
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: {
+                xs: "1.5rem",
+                sm: "2rem",
+                md: "2.5rem",
+                lg: "3rem"
+              }
+            }}
 
-      {/* main box */}
-      <Box
-        sx={{
-          width: {
-            sm: "70%",
-            xs: "90%"
-          },
-          height: "25rem",
-          border: "1px solid #1992E2",
-          borderRadius: "20px",
-          padding: "1rem",
-          backgroundColor: "#fff",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          gap: "20px",
-        }}
-      >
+          >{`Convert ${fromCurrency} to ${toCurrency}`}</Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              fontSize: {
+                xs: "1rem",
+                sm: "1.7rem"
+              }
+            }}
+          >Currency Converter</Typography>
 
-        <ConvertedAmount
-          currencies={currencies}
-          toCurrency={toCurrency}
-          convertedAmount={convertedAmount}
-        />
-
-        <TextField
-          id="amount"
-          label="amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          type="number"
-          sx={{
-            width: "50%",
-            borderRadius: "4px",
-            backgroundColor: "white",
-            '& .MuiFilledInput-root': {
-              backgroundColor: 'white',
-              '&:hover': {
-                backgroundColor: 'white',
+          {/* main box */}
+          <Box
+            sx={{
+              width: {
+                sm: "70%",
+                xs: "90%"
               },
-              '&.Mui-focused': {
-                backgroundColor: 'white',
-              },
-              '&:before': {
-                display: 'none',
-              },
-              '&:after': {
-                display: 'none',
-              },
-            },
-          }}
-        />
+              height: "25rem",
+              border: "1px solid #1992E2",
+              borderRadius: "20px",
+              padding: "1rem",
+              backgroundColor: "#fff",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              gap: "20px",
+            }}
+          >
 
-        {/* nested box invisible */}
-        <Box sx={{
-          display: "flex",
-          flexDirection: {
-            xs: "column",
-            md: "row"
-          },
-          gap: "20px",
-        }}>
-          <FormControl>
-            <InputLabel id="from-label-id" >From</InputLabel>
-            <Select
-              labelId="from-label-id"
-              id="from-id"
-              label="from"
-              value={fromCurrency}
-              onChange={(e) => setFromCurrency(e.target.value)}
-              sx={{ width: "20rem" }}
-            >
-              {currencies.map((currency) => (
-                <MenuItem key={currency.id} value={currency.currencyName}>
-                  {currency.currencySign} {currency.currencyName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            <ConvertedAmount
+              currencies={currencyList}
+              toCurrency={toCurrency}
+              convertedAmount={convertedAmount}
+            />
 
-          <SwapButton onClick={handleSwap} />
+            <TextField
+              id="amount"
+              label="amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              type="number"
+              sx={{
+                width: {
+                  sm: "",
+                  md: "45.5rem",
+                  lg: "45.5rem"
+                },
+                borderRadius: "4px",
+                backgroundColor: "white",
+                '& .MuiFilledInput-root': {
+                  backgroundColor: 'white',
+                  '&:hover': {
+                    backgroundColor: 'white',
+                  },
+                  '&.Mui-focused': {
+                    backgroundColor: 'white',
+                  },
+                  '&:before': {
+                    display: 'none',
+                  },
+                  '&:after': {
+                    display: 'none',
+                  },
+                },
+              }}
+            />
 
-          <FormControl>
-            <InputLabel id="to-label-id">To</InputLabel>
-            <Select
-              labelId="to-label-id"
-              id="to-id"
-              label="to"
-              value={toCurrency}
-              onChange={(e) => setToCurrency(e.target.value)}
-              sx={{ width: "20rem" }}
-            >
-              {currencies.map((currency) => (
-                <MenuItem key={currency.id} value={currency.currencyName}>
-                  {currency.currencySign} {currency.currencyName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-      </Box>
+            {/* nested box invisible */}
+            <Box sx={{
+              display: "flex",
+              flexDirection: {
+                xs: "column",
+                md: "row"
+              },
+              gap: {
+                xs: "0",
+                sm: "0",
+                md: "20px",
+                lg: "20px",
+              },
+            }}>
+              <FormControl>
+                <InputLabel id="from-label-id" >From</InputLabel>
+                <Select
+                  labelId="from-label-id"
+                  id="from-id"
+                  label="from"
+                  value={fromCurrency}
+                  onChange={(e) => setFromCurrency(e.target.value)}
+                  sx={{ width: "20rem" }}
+                >
+
+                  {currencyList.map((currency) => (
+                    <MenuItem selected={true} key={currency} value={currency}>
+                      {currency}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <SwapButton onClick={handleSwap} />
+
+              <FormControl>
+                <InputLabel id="to-label-id">To</InputLabel>
+                <Select
+                  labelId="to-label-id"
+                  id="to-id"
+                  label="to"
+                  value={toCurrency}
+                  onChange={(e) => setToCurrency(e.target.value)}
+                  sx={{ width: "20rem" }}
+                >
+
+                  {currencyList.map((currency) => (
+                    <MenuItem selected={true} key={currency} value={currency}>
+                      {currency}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
+          <Footer />
+        </>
+      }
     </div>
   );
 };

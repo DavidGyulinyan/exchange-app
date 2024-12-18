@@ -1,23 +1,21 @@
 import { Box, Typography} from "@mui/material";
-import CurrencyIcon from "../components/CurrencyIcon";
 
-export default function Header() {
+export default function Footer() {
     return (
         <Box
             sx={{
                 width: "100%",
-                height: "200px",
+                height:"109px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                flexDirection:"column",
                 bgcolor: "#00214A",
-                color: "white",
-                fontFamily: "Inter, Arial, sans-serif"
+                color: "white"
             }}
         >
-            <CurrencyIcon />
-                <Typography variant="h3">
-                    Best Exchange Rates
+                <Typography>
+                © 2024 Exchange App. All rights reserved.
                 </Typography>
         </Box>
     )
