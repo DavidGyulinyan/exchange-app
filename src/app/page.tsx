@@ -23,8 +23,8 @@ export default function Home() {
   const [amount, setAmount] = useState<string>('');
   const [convertedAmount, setConvertedAmount] = useState<string>("");
   const [currenciesData, setCurrenciesData] = useState<Data>();
-  const [fromCurrency, setFromCurrency] = useState<string>("AMD");
-  const [toCurrency, setToCurrency] = useState<string>("USD");
+  const [fromCurrency, setFromCurrency] = useState<string>("");
+  const [toCurrency, setToCurrency] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [currencyList, setCurrencyList] = useState<string[]>([]);
 
@@ -54,6 +54,12 @@ export default function Home() {
         .then((data) => {
           setCurrenciesData(data);
           setCurrencyList(Object.keys(data.conversion_rates));
+          const currencies = Object.keys(data.conversion_rates);
+          if (currencies.length > 0) {
+            setFromCurrency(currencies[0]);
+            setToCurrency(currencies[4]);
+          }
+
           setLoading(false);
 
         })
@@ -66,8 +72,6 @@ export default function Home() {
 
     getExchangeData();
   }, []);
-
-  // console.log(currenciesData?.conversion_rates);
 
 
   const handleSwap = (): void => {
@@ -82,12 +86,14 @@ export default function Home() {
       const toRate = currenciesData.conversion_rates[toCurrency];
       const convertedValue = (parseFloat(amount) / fromRate) * toRate;
       setConvertedAmount(convertedValue.toFixed(2));
+
     }
   };
 
-
   useEffect(() => {
+
     handleConvert();
+
   }, [handleConvert]);
 
   return (
@@ -103,149 +109,162 @@ export default function Home() {
         gap: "30px"
       }}
     >
-      {loading ? <Loading /> :
-        <>
+      <Header />
+      {
+        loading ? <Loading /> :
+          <>
 
-          <Header />
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: {
-                xs: "1.5rem",
-                sm: "2rem",
-                md: "2.5rem",
-                lg: "3rem"
-              }
-            }}
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: {
+                  xs: "1.5rem",
+                  sm: "2rem",
+                  md: "2.5rem",
+                  lg: "3rem"
+                }
+              }}
 
-          >{`Convert ${fromCurrency} to ${toCurrency}`}</Typography>
-          <Typography
-            variant="h4"
-            sx={{
-              fontSize: {
-                xs: "1rem",
-                sm: "1.7rem"
-              }
-            }}
-          >Currency Converter</Typography>
+            >{`Convert ${fromCurrency} to ${toCurrency}`}</Typography>
 
-          {/* main box */}
-          <Box
-            sx={{
-              width: {
-                sm: "70%",
-                xs: "90%"
-              },
-              height: "25rem",
-              border: "1px solid #1992E2",
-              borderRadius: "20px",
-              padding: "1rem",
-              backgroundColor: "#fff",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              gap: "20px",
-            }}
-          >
 
-            <ConvertedAmount
-              currencies={currencyList}
-              toCurrency={toCurrency}
-              convertedAmount={convertedAmount}
-            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "4px",
+                fontSize: "10px"
+              }}
+            >
+              <Typography>
+                {`Last update: ${currenciesData?.time_last_update_utc}`}
+              </Typography>
 
-            <TextField
-              id="amount"
-              label="amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              type="number"
+              <Typography>
+                {`Next update: ${currenciesData?.time_next_update_utc}`}
+              </Typography>
+
+            </Box>
+
+            {/* main box */}
+            <Box
               sx={{
                 width: {
-                  sm: "",
-                  md: "45.5rem",
-                  lg: "45.5rem"
+                  sm: "70%",
+                  xs: "90%"
                 },
-                borderRadius: "4px",
-                backgroundColor: "white",
-                '& .MuiFilledInput-root': {
-                  backgroundColor: 'white',
-                  '&:hover': {
-                    backgroundColor: 'white',
-                  },
-                  '&.Mui-focused': {
-                    backgroundColor: 'white',
-                  },
-                  '&:before': {
-                    display: 'none',
-                  },
-                  '&:after': {
-                    display: 'none',
-                  },
-                },
+                height: "25rem",
+                border: "1px solid #1992E2",
+                borderRadius: "20px",
+                padding: "1rem",
+                backgroundColor: "#fff",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                gap: "20px",
               }}
-            />
+            >
 
-            {/* nested box invisible */}
-            <Box sx={{
-              display: "flex",
-              flexDirection: {
-                xs: "column",
-                md: "row"
-              },
-              gap: {
-                xs: "0",
-                sm: "0",
-                md: "20px",
-                lg: "20px",
-              },
-            }}>
-              <FormControl>
-                <InputLabel id="from-label-id" >From</InputLabel>
-                <Select
-                  labelId="from-label-id"
-                  id="from-id"
-                  label="from"
-                  value={fromCurrency}
-                  onChange={(e) => setFromCurrency(e.target.value)}
-                  sx={{ width: "20rem" }}
-                >
+              <TextField
+                id="amount"
+                label="amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                type="number"
+                sx={{
+                  width: {
+                    xs: "20rem",
+                    sm: "20rem",
+                    md: "45.5rem",
+                    lg: "45.5rem"
+                  },
+                  borderRadius: "4px",
+                  backgroundColor: "white",
+                  '& .MuiFilledInput-root': {
+                    backgroundColor: 'white',
+                    '&:hover': {
+                      backgroundColor: 'white',
+                    },
+                    '&.Mui-focused': {
+                      backgroundColor: 'white',
+                    },
+                    '&:before': {
+                      display: 'none',
+                    },
+                    '&:after': {
+                      display: 'none',
+                    },
+                  },
+                }}
+              />
 
-                  {currencyList.map((currency) => (
-                    <MenuItem selected={true} key={currency} value={currency}>
-                      {currency}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              {/* nested box invisible */}
+              <Box sx={{
+                display: "flex",
+                flexDirection: {
+                  xs: "column",
+                  md: "row"
+                },
+                gap: {
+                  xs: "0",
+                  sm: "0",
+                  md: "20px",
+                  lg: "20px",
+                },
+              }}>
+                <FormControl>
+                  <InputLabel id="from-label-id" >From</InputLabel>
+                  <Select
+                    labelId="from-label-id"
+                    id="from-id"
+                    label="from"
+                    value={fromCurrency}
+                    onChange={(e) => setFromCurrency(e.target.value)}
+                    sx={{ width: "20rem" }}
+                  >
 
-              <SwapButton onClick={handleSwap} />
+                    {currencyList.map((currency) => (
+                      <MenuItem selected={true} key={currency} value={currency}>
+                        {currency}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-              <FormControl>
-                <InputLabel id="to-label-id">To</InputLabel>
-                <Select
-                  labelId="to-label-id"
-                  id="to-id"
-                  label="to"
-                  value={toCurrency}
-                  onChange={(e) => setToCurrency(e.target.value)}
-                  sx={{ width: "20rem" }}
-                >
+                <SwapButton onClick={handleSwap} />
 
-                  {currencyList.map((currency) => (
-                    <MenuItem selected={true} key={currency} value={currency}>
-                      {currency}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                <FormControl>
+                  <InputLabel id="to-label-id">To</InputLabel>
+                  <Select
+                    labelId="to-label-id"
+                    id="to-id"
+                    label="to"
+                    value={toCurrency}
+                    onChange={(e) => setToCurrency(e.target.value)}
+                    sx={{ width: "20rem" }}
+                  >
+
+                    {currencyList.map((currency) => (
+                      <MenuItem selected={true} key={currency} value={currency}>
+                        {currency}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Typography>This currency converter is for demonstration purposes only and does not provide real exchange ratess</Typography>
+              
+              <ConvertedAmount
+                currencies={currencyList}
+                toCurrency={toCurrency}
+                convertedAmount={convertedAmount}
+              />
             </Box>
-          </Box>
-          <Footer />
-        </>
+          </>
       }
+      <Footer />
     </div>
   );
 };

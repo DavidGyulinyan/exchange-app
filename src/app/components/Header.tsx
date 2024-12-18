@@ -1,4 +1,4 @@
-import { Box, Typography} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import CurrencyIcon from "../components/CurrencyIcon";
 
 export default function Header() {
@@ -10,15 +10,30 @@ export default function Header() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                flexDirection: {
+                    xs: "column",
+                    sm: "column",
+                    md: "row",
+                    lg: "row",
+                },
                 bgcolor: "#00214A",
                 color: "white",
                 fontFamily: "Inter, Arial, sans-serif"
             }}
         >
             <CurrencyIcon />
-                <Typography variant="h3">
-                    Best Exchange Rates
-                </Typography>
+            <Typography
+                sx={{
+                    fontSize: {
+                        xs: "25px",
+                        sm: "30px",
+                        md: "35px",
+                        lg: "35px",
+                    },
+                }}
+            >
+                Best Exchange Rates
+            </Typography>
         </Box>
     )
 }
