@@ -6,9 +6,16 @@ interface ConvertedAmountProps {
   convertedAmount: number | string;
 }
 
-export default function ConvertedAmount({ currencies, toCurrency, convertedAmount }: ConvertedAmountProps) {  
+export default function ConvertedAmount({ currencies, toCurrency, convertedAmount }: ConvertedAmountProps) {
   return (
-    <Typography variant="h5">
+    <Typography
+      variant="h5"
+      sx={{
+        fontSize: {
+          xs: "20px"
+        }
+      }}
+    >
       {`Converted Amount: ${+convertedAmount || "00.00"}`}
     </Typography>
   );

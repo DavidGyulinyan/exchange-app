@@ -133,14 +133,27 @@ export default function Home() {
                 display: "flex",
                 flexDirection: "column",
                 gap: "4px",
-                fontSize: "10px"
               }}
             >
-              <Typography>
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  fontSize: {
+                    xs:"12px"
+                  }
+                }}
+              >
                 {`Last update: ${currenciesData?.time_last_update_utc}`}
               </Typography>
 
-              <Typography>
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  fontSize: {
+                    xs:"12px"
+                  }
+                }}
+              >
                 {`Next update: ${currenciesData?.time_next_update_utc}`}
               </Typography>
 
@@ -149,7 +162,10 @@ export default function Home() {
             {/* main box */}
             <Box
               sx={{
-                width: "90%",
+                width: {
+                  xs: "99%",
+                  sm: "90%",
+                },
                 height: "25rem",
                 border: "1px solid #1992E2",
                 borderRadius: "20px",
@@ -251,8 +267,14 @@ export default function Home() {
                   </Select>
                 </FormControl>
               </Box>
-              <Typography>This currency converter is for demonstration purposes only and does not provide real exchange ratess</Typography>
-              
+              <Typography
+                sx={{
+                  textAlign: "center"
+                }}
+              >
+                This currency converter is for demonstration purposes only and does not provide real exchange ratess
+              </Typography>
+
               <ConvertedAmount
                 currencies={currencyList}
                 toCurrency={toCurrency}
