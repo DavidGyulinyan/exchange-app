@@ -168,9 +168,9 @@ export default function Home() {
                   sm: "90%",
                 },
                 height: "25rem",
-                border: "1px solid #1992E2",
+                border: "3px solid #00214A",
                 borderRadius: "20px",
-                padding: "1rem",
+                padding: "4rem 1rem 3.5rem 1rem",
                 backgroundColor: "#fff",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 display: "flex",
@@ -180,6 +180,13 @@ export default function Home() {
                 gap: "20px",
               }}
             >
+
+
+              <ConvertedAmount
+                currencies={currencyList}
+                toCurrency={toCurrency}
+                convertedAmount={convertedAmount}
+              />
 
               {/* amount text field */}
               <TextField
@@ -285,11 +292,6 @@ export default function Home() {
                 This currency converter is for demonstration purposes only and does not provide real exchange ratess
               </Typography>
 
-              <ConvertedAmount
-                currencies={currencyList}
-                toCurrency={toCurrency}
-                convertedAmount={convertedAmount}
-              />
             </Box>
           </>
       }
