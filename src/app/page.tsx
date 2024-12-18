@@ -161,7 +161,6 @@ export default function Home() {
                 alignItems: "center",
                 flexDirection: "column",
                 gap: "20px",
-                
               }}
             >
 
