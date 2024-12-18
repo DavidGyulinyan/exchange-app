@@ -24,10 +24,16 @@ export default function Footer() {
                     height:"10px",
                     display: "flex",
                     justifyContent: "center",
+                    marginTop:"15px"
                 }}
             >
 
-                <Link href="https://www.exchangerate-api.com/terms">terms of use</Link>
+                <Link 
+                href="https://www.exchangerate-api.com/terms"
+                sx={{
+                    fontSize:"12px"
+                }}
+                >terms of use</Link>
             </Box>
             </Box>
         </>
