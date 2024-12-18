@@ -28,6 +28,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [currencyList, setCurrencyList] = useState<string[]>([]);
 
+  //currencies data interface
   interface Data {
     result: string;
     documentation: string;
@@ -42,7 +43,7 @@ export default function Home() {
     };
   };
 
-  //Request to the api to get exchange rates
+  //request to the api to get exchange rates
   useEffect(() => {
 
     const getExchangeData = () => {
@@ -73,13 +74,13 @@ export default function Home() {
     getExchangeData();
   }, []);
 
-
+  //swaps currencies inputes
   const handleSwap = (): void => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
   }
 
-  // Placeholder conversion logic
+  // conversion logic
   const handleConvert = (): void => {
     if (currenciesData && amount) {
       const fromRate = currenciesData.conversion_rates[fromCurrency];
@@ -139,7 +140,7 @@ export default function Home() {
                 sx={{
                   textAlign: "center",
                   fontSize: {
-                    xs:"12px"
+                    xs: "12px"
                   }
                 }}
               >
@@ -150,7 +151,7 @@ export default function Home() {
                 sx={{
                   textAlign: "center",
                   fontSize: {
-                    xs:"12px"
+                    xs: "12px"
                   }
                 }}
               >
@@ -163,7 +164,7 @@ export default function Home() {
             <Box
               sx={{
                 width: {
-                  xs: "99%",
+                  xs: "98%",
                   sm: "90%",
                 },
                 height: "25rem",
@@ -180,6 +181,7 @@ export default function Home() {
               }}
             >
 
+              {/* amount text field */}
               <TextField
                 id="amount"
                 label="amount"
@@ -216,6 +218,10 @@ export default function Home() {
               {/* nested box invisible */}
               <Box sx={{
                 display: "flex",
+                alignItems: {
+                  xs: "end",
+                },
+
                 flexDirection: {
                   xs: "column",
                   md: "row"
@@ -227,6 +233,8 @@ export default function Home() {
                   lg: "20px",
                 },
               }}>
+
+                {/* currency from wich should start converting */}
                 <FormControl>
                   <InputLabel id="from-label-id" >From</InputLabel>
                   <Select
@@ -246,8 +254,10 @@ export default function Home() {
                   </Select>
                 </FormControl>
 
+                {/* button that swaps the inputes */}
                 <SwapButton onClick={handleSwap} />
 
+                {/* currency to wich should be converted */}
                 <FormControl>
                   <InputLabel id="to-label-id">To</InputLabel>
                   <Select
