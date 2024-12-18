@@ -149,10 +149,7 @@ export default function Home() {
             {/* main box */}
             <Box
               sx={{
-                width: {
-                  sm: "70%",
-                  xs: "90%"
-                },
+                width: "90%",
                 height: "25rem",
                 border: "1px solid #1992E2",
                 borderRadius: "20px",
@@ -164,6 +161,7 @@ export default function Home() {
                 alignItems: "center",
                 flexDirection: "column",
                 gap: "20px",
+                
               }}
             >
 

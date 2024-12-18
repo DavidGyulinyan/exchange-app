@@ -5,7 +5,7 @@ export default function Loading() {
     <div
       style={{
         width: "100%",
-        height: "100%",
+        height: "70rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
