@@ -184,7 +184,7 @@ export default function Home() {
               {/* amount text field */}
               <TextField
                 id="amount"
-                label="amount"
+                label="Amount"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 type="number"
