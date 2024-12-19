@@ -16,12 +16,16 @@ export default function Header() {
                     md: "row",
                     lg: "row",
                 },
+                gap:"10px",
                 bgcolor: "#00214A",
                 color: "white",
                 fontFamily: "Inter, Arial, sans-serif"
             }}
         >
-            <CurrencyIcon />
+            <CurrencyIcon onClick={function (): void {
+                throw new Error("Function not implemented.");
+            } } />
+
             <Typography
                 sx={{
                     fontSize: {
