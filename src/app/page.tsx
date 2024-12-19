@@ -107,10 +107,10 @@ export default function Home() {
         flexDirection: "column",
         justifyContent: `${loading ? "center" : "space-between"}`,
         alignItems: "center",
-        gap: "30px"
+        gap: "30px",
+        margin:"30px 0 30px 0"
       }}
     >
-      <Header />
       {
         loading ? <Loading /> :
           <>
@@ -295,7 +295,6 @@ export default function Home() {
             </Box>
           </>
       }
-      <Footer />
     </div>
   );
 };
