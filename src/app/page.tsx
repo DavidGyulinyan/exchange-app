@@ -11,13 +11,12 @@ import {
 } from "@mui/material";
 
 import "@fontsource/roboto";
-import Header from "./components/Header";
 import ConvertedAmount from "./components/ConvertedAmount";
 import SwapButton from "./components/SwapButton";
 
 import { useEffect, useState } from "react";
-import Footer from "./components/Footer";
 import Loading from "./components/Loading";
+
 
 export default function Home() {
   const [amount, setAmount] = useState<string>('');
@@ -43,11 +42,14 @@ export default function Home() {
     };
   };
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+
   //request to the api to get exchange rates
   useEffect(() => {
 
     const getExchangeData = () => {
-      fetch(`https://v6.exchangerate-api.com/v6/202d201dda9ebd5a8b2d3591/latest/USD`)
+      fetch(`${apiUrl}${apiKey}/latest/USD`)
         .then((response) => {
           if (!response.ok) throw new Error(`HTTP error: Status ${response.status}`);
           return response.json()
@@ -108,7 +110,7 @@ export default function Home() {
         justifyContent: `${loading ? "center" : "space-between"}`,
         alignItems: "center",
         gap: "30px",
-        margin:"30px 0 30px 0"
+        margin: "30px 0 30px 0"
       }}
     >
       {
