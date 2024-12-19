@@ -234,8 +234,8 @@ export default function Home() {
                   md: "row"
                 },
                 gap: {
-                  xs: "0",
-                  sm: "0",
+                  xs: "10px",
+                  sm: "10px",
                   md: "20px",
                   lg: "20px",
                 },

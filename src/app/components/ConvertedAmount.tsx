@@ -11,6 +11,7 @@ export default function ConvertedAmount({ currencies, toCurrency, convertedAmoun
     <Typography
       variant="h5"
       sx={{
+        textAlign:"center",
         fontSize: {
           xs: "20px"
         }
