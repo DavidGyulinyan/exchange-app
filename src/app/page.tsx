@@ -291,7 +291,7 @@ export default function Home() {
                   textAlign: "center"
                 }}
               >
-                This currency converter is for demonstration purposes only and does not provide real exchange ratess
+                This currency converter is for demonstration purposes only and does not provide real exchange rates
               </Typography>
 
             </Box>
