@@ -33,7 +33,7 @@ export default function Footer() {
                 sx={{
                     fontSize:"12px"
                 }}
-                >terms of use</Link>
+                >Terms of use</Link>
             </Box>
             </Box>
         </>
