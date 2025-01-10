@@ -241,7 +241,14 @@ export default function Home() {
                   label="from"
                   value={fromCurrency}
                   onChange={(e) => setFromCurrency(e.target.value)}
-                  sx={{ width: "20rem" }}
+                  sx={{
+                    minWidth: {
+                      xs: "20rem",
+                      sm: "20rem",
+                      md: "20.7rem",
+                      lg: "20.7rem",
+                    },
+                  }}
                 >
                   {currencyList.map((currency) => (
                     <MenuItem selected={true} key={currency} value={currency}>
@@ -263,7 +270,14 @@ export default function Home() {
                   label="to"
                   value={toCurrency}
                   onChange={(e) => setToCurrency(e.target.value)}
-                  sx={{ width: "20rem" }}
+                  sx={{
+                    minWidth: {
+                      xs: "20rem",
+                      sm: "20rem",
+                      md: "20.7rem",
+                      lg: "20.7rem",
+                    },
+                  }}
                 >
                   {currencyList.map((currency) => (
                     <MenuItem selected={true} key={currency} value={currency}>
@@ -278,8 +292,8 @@ export default function Home() {
                 textAlign: "center",
               }}
             >
-              This currency converter is for demonstration purposes only and
-              does not provide real exchange rates
+              This currency converter provides approximate exchange rates for
+              general reference only.
             </Typography>
           </Box>
         </>

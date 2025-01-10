@@ -1,6 +1,11 @@
 import { Box, Typography, Link } from "@mui/material";
 
 export default function Footer() {
+  function getCurrentYear(): number {
+    const date = new Date();
+    return date.getFullYear();
+  }
+
   return (
     <>
       <Box
@@ -15,7 +20,9 @@ export default function Footer() {
           color: "white",
         }}
       >
-        <Typography>© 2024 Exchange App. All rights reserved.</Typography>
+        <Typography>
+          © {getCurrentYear()} Exchange App. All rights reserved.
+        </Typography>
         <Box
           sx={{
             width: "100%",
