@@ -33,7 +33,7 @@ export default function Footer() {
           }}
         >
           <Link
-            href="https://www.exchangerate-api.com/terms"
+            href="https://docs.google.com/document/d/e/2PACX-1vSqgDzlbEnxw-KoCS6ecj_tGzjSlkxDc7bUBMwzor65LKNLTEqzxm4q2iVvStCkmzo4N6dnVlcRGRuo/pub"
             sx={{
               fontSize: "12px",
             }}
