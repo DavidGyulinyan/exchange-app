@@ -54,16 +54,21 @@ export default function Home() {
         })
         .then((data) => {
           setCurrenciesData(data);
-          const storedHistory = JSON.parse(
-            localStorage.getItem("currencyHistory") || "[]"
-          );
-          const initialFromCurrency =
-            storedHistory[0]?.from || Object.keys(data.conversion_rates)[0];
-          const initialToCurrency =
-            storedHistory[0]?.to || Object.keys(data.conversion_rates)[1];
 
-          setFromCurrency(initialFromCurrency);
-          setToCurrency(initialToCurrency);
+          // Ensure this block runs only on the client side
+          if (typeof window !== "undefined") {
+            const storedHistory = JSON.parse(
+              localStorage.getItem("currencyHistory") || "[]"
+            );
+            const initialFromCurrency =
+              storedHistory[0]?.from || Object.keys(data.conversion_rates)[0];
+            const initialToCurrency =
+              storedHistory[0]?.to || Object.keys(data.conversion_rates)[1];
+
+            setFromCurrency(initialFromCurrency);
+            setToCurrency(initialToCurrency);
+          }
+
           setCurrencyList(Object.keys(data.conversion_rates));
           setLoading(false);
         })
