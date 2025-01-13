@@ -54,8 +54,6 @@ export default function Home() {
         })
         .then((data) => {
           setCurrenciesData(data);
-
-          // Ensure this block runs only on the client side
           if (typeof window !== "undefined") {
             const storedHistory = JSON.parse(
               localStorage.getItem("currencyHistory") || "[]"
@@ -68,7 +66,6 @@ export default function Home() {
             setFromCurrency(initialFromCurrency);
             setToCurrency(initialToCurrency);
           }
-
           setCurrencyList(Object.keys(data.conversion_rates));
           setLoading(false);
         })
@@ -95,15 +92,19 @@ export default function Home() {
   };
 
   const updateHistory = (from: string, to: string): void => {
-    const history = JSON.parse(localStorage.getItem("currencyHistory") || "[]");
-    const newHistory = [
-      { from, to },
-      ...history.filter(
-        (entry: { from: string; to: string }) =>
-          entry.from !== from || entry.to !== to
-      ),
-    ].slice(0, 5);
-    localStorage.setItem("currencyHistory", JSON.stringify(newHistory));
+    if (typeof window !== "undefined") {
+      const history = JSON.parse(
+        localStorage.getItem("currencyHistory") || "[]"
+      );
+      const newHistory = [
+        { from, to },
+        ...history.filter(
+          (entry: { from: string; to: string }) =>
+            entry.from !== from || entry.to !== to
+        ),
+      ].slice(0, 5);
+      localStorage.setItem("currencyHistory", JSON.stringify(newHistory));
+    }
   };
 
   useEffect(() => {
@@ -149,7 +150,10 @@ export default function Home() {
     return mergedList;
   };
 
-  const history = JSON.parse(localStorage.getItem("currencyHistory") || "[]");
+  const history =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("currencyHistory") || "[]")
+      : [];
   const mergedCurrencyList = mergeHistoryWithList(history, currencyList);
 
   return (
