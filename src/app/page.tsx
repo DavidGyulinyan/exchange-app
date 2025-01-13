@@ -61,7 +61,7 @@ export default function Home() {
             const initialFromCurrency =
               storedHistory[0]?.from || Object.keys(data.conversion_rates)[0];
             const initialToCurrency =
-              storedHistory[0]?.to || Object.keys(data.conversion_rates)[1];
+              storedHistory[0]?.to || Object.keys(data.conversion_rates)[4];
 
             setFromCurrency(initialFromCurrency);
             setToCurrency(initialToCurrency);
