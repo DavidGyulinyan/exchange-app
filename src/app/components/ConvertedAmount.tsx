@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Typography } from "@mui/material";
 
 interface ConvertedAmountProps {
   currencies: any[];
@@ -6,18 +6,23 @@ interface ConvertedAmountProps {
   convertedAmount: number | string;
 }
 
-export default function ConvertedAmount({ currencies, toCurrency, convertedAmount }: ConvertedAmountProps) {
+export default function ConvertedAmount({
+  convertedAmount,
+}: ConvertedAmountProps) {
   return (
     <Typography
       variant="h5"
       sx={{
-        textAlign:"center",
+        textAlign: "center",
         fontSize: {
-          xs: "20px"
-        }
+          xs: "20px",
+        },
+        color: +convertedAmount < 0 ? "red" : "black",
       }}
     >
-      {`Converted Amount: ${+convertedAmount || "00.00"}`}
+      {+convertedAmount < 0
+        ? "Please enter the valid number"
+        : `Converted Amount: ${+convertedAmount || "00.00"}`}
     </Typography>
   );
-};
+}

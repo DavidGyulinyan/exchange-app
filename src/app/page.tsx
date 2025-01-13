@@ -44,7 +44,6 @@ export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
-  //request to the api to get exchange rates
   useEffect(() => {
     const getExchangeData = () => {
       fetch(`${apiUrl}${apiKey}/latest/USD`)
@@ -55,13 +54,17 @@ export default function Home() {
         })
         .then((data) => {
           setCurrenciesData(data);
-          setCurrencyList(Object.keys(data.conversion_rates));
-          const currencies = Object.keys(data.conversion_rates);
-          if (currencies.length > 0) {
-            setFromCurrency(currencies[0]);
-            setToCurrency(currencies[4]);
-          }
+          const storedHistory = JSON.parse(
+            localStorage.getItem("currencyHistory") || "[]"
+          );
+          const initialFromCurrency =
+            storedHistory[0]?.from || Object.keys(data.conversion_rates)[0];
+          const initialToCurrency =
+            storedHistory[0]?.to || Object.keys(data.conversion_rates)[4];
 
+          setFromCurrency(initialFromCurrency);
+          setToCurrency(initialToCurrency);
+          setCurrencyList(Object.keys(data.conversion_rates));
           setLoading(false);
         })
         .catch((error) => {
@@ -73,13 +76,37 @@ export default function Home() {
     getExchangeData();
   }, []);
 
-  //swaps currencies inputes
   const handleSwap = (): void => {
-    setFromCurrency(toCurrency);
-    setToCurrency(fromCurrency);
+    setFromCurrency((prev) => {
+      const newFromCurrency = toCurrency;
+      updateHistory(newFromCurrency, fromCurrency);
+      return newFromCurrency;
+    });
+    setToCurrency((prev) => {
+      const newToCurrency = fromCurrency;
+      updateHistory(toCurrency, newToCurrency);
+      return newToCurrency;
+    });
   };
 
-  // conversion logic
+  const updateHistory = (from: string, to: string): void => {
+    const history = JSON.parse(localStorage.getItem("currencyHistory") || "[]");
+    const newHistory = [
+      { from, to },
+      ...history.filter(
+        (entry: { from: string; to: string }) =>
+          entry.from !== from || entry.to !== to
+      ),
+    ].slice(0, 5);
+    localStorage.setItem("currencyHistory", JSON.stringify(newHistory));
+  };
+
+  useEffect(() => {
+    if (fromCurrency && toCurrency) {
+      updateHistory(fromCurrency, toCurrency);
+    }
+  }, [fromCurrency, toCurrency]);
+
   const handleConvert = (): void => {
     if (currenciesData && amount) {
       const fromRate = currenciesData.conversion_rates[fromCurrency];
@@ -92,6 +119,33 @@ export default function Home() {
   useEffect(() => {
     handleConvert();
   }, [handleConvert]);
+
+  const mergeHistoryWithList = (
+    history: { from: string; to: string }[],
+    list: string[]
+  ): string[] => {
+    const uniqueCurrencies = new Set();
+    const mergedList: string[] = [];
+
+    history.forEach((entry) => {
+      if (!uniqueCurrencies.has(entry.from)) {
+        uniqueCurrencies.add(entry.from);
+        mergedList.push(entry.from);
+      }
+    });
+
+    list.forEach((currency) => {
+      if (!uniqueCurrencies.has(currency)) {
+        uniqueCurrencies.add(currency);
+        mergedList.push(currency);
+      }
+    });
+
+    return mergedList;
+  };
+
+  const history = JSON.parse(localStorage.getItem("currencyHistory") || "[]");
+  const mergedCurrencyList = mergeHistoryWithList(history, currencyList);
 
   return (
     <div
@@ -250,8 +304,8 @@ export default function Home() {
                     },
                   }}
                 >
-                  {currencyList.map((currency) => (
-                    <MenuItem selected={true} key={currency} value={currency}>
+                  {mergedCurrencyList.map((currency, index) => (
+                    <MenuItem key={`from-${index}`} value={currency}>
                       {currency}
                     </MenuItem>
                   ))}
@@ -267,7 +321,7 @@ export default function Home() {
                 <Select
                   labelId="to-label-id"
                   id="to-id"
-                  label="to"
+                  label="from"
                   value={toCurrency}
                   onChange={(e) => setToCurrency(e.target.value)}
                   sx={{
@@ -279,8 +333,8 @@ export default function Home() {
                     },
                   }}
                 >
-                  {currencyList.map((currency) => (
-                    <MenuItem selected={true} key={currency} value={currency}>
+                  {mergedCurrencyList.map((currency, index) => (
+                    <MenuItem key={`to-${index}`} value={currency}>
                       {currency}
                     </MenuItem>
                   ))}
@@ -289,7 +343,14 @@ export default function Home() {
             </Box>
             <Typography
               sx={{
+                width: "50%",
                 textAlign: "center",
+                fontSize: {
+                  xs: "11px",
+                  sm: "13px",
+                  md: "14px",
+                  lg: "16px",
+                },
               }}
             >
               This currency converter provides approximate exchange rates for
