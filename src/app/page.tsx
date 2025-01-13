@@ -284,12 +284,6 @@ export default function Home() {
                       "&.Mui-focused": {
                         backgroundColor: "white",
                       },
-                      "&:before": {
-                        display: "none",
-                      },
-                      "&:after": {
-                        display: "none",
-                      },
                     },
                   }}
                 />
