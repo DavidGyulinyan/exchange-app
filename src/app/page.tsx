@@ -374,7 +374,7 @@ export default function Home() {
                     width: "50%",
                     textAlign: "center",
                     fontSize: {
-                      xs: "11px",
+                      xs: "12px",
                       sm: "13px",
                       md: "14px",
                       lg: "16px",
