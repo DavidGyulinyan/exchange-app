@@ -13,6 +13,7 @@ import {
 import "@fontsource/roboto";
 import ConvertedAmount from "./components/ConvertedAmount";
 import SwapButton from "./components/SwapButton";
+import Head from "next/head";
 
 import { useEffect, useState } from "react";
 import Loading from "./components/Loading";
@@ -157,217 +158,237 @@ export default function Home() {
   const mergedCurrencyList = mergeHistoryWithList(history, currencyList);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: `${loading ? "100vh" : "100%"}`,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: `${loading ? "center" : "space-between"}`,
-        alignItems: "center",
-        gap: "30px",
-        margin: "30px 0 30px 0",
-      }}
-    >
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: {
-                xs: "1.5rem",
-                sm: "2rem",
-                md: "2.5rem",
-                lg: "3rem",
-              },
-            }}
-          >{`Convert ${fromCurrency} to ${toCurrency}`}</Typography>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "4px",
-            }}
-          >
-            <Typography
-              sx={{
-                textAlign: "center",
-                fontSize: {
-                  xs: "12px",
-                },
-              }}
-            >
-              {`Last update: ${currenciesData?.time_last_update_utc}`}
-            </Typography>
-
-            <Typography
-              sx={{
-                textAlign: "center",
-                fontSize: {
-                  xs: "12px",
-                },
-              }}
-            >
-              {`Next update: ${currenciesData?.time_next_update_utc}`}
-            </Typography>
-          </Box>
-
-          {/* main box */}
-          <Box
-            sx={{
-              width: {
-                xs: "98%",
-                sm: "90%",
-              },
-              height: "25rem",
-              border: "3px solid #00214A",
-              borderRadius: "20px",
-              padding: "4rem 1rem 3.5rem 1rem",
-              backgroundColor: "#fff",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              gap: "20px",
-            }}
-          >
-            <ConvertedAmount
-              currencies={currencyList}
-              toCurrency={toCurrency}
-              convertedAmount={convertedAmount}
-            />
-
-            {/* amount text field */}
-            <TextField
-              id="amount"
-              label="Amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              type="number"
-              sx={{
-                width: {
-                  xs: "20rem",
-                  sm: "20rem",
-                  md: "45.5rem",
-                  lg: "45.5rem",
-                },
-                borderRadius: "4px",
-                backgroundColor: "white",
-                "& .MuiFilledInput-root": {
-                  backgroundColor: "white",
-                  "&:hover": {
-                    backgroundColor: "white",
+    <>
+      <Head>
+        <title>
+          Currency Converter - Convert {fromCurrency} to {toCurrency}
+        </title>
+        <meta
+          name="description"
+          content={`Convert ${fromCurrency} to ${toCurrency} with real-time exchange rates. Easy and accurate currency conversion.`}
+        />
+        <link rel="canonical" href="https://ratesnap.netlify.app/" />
+        <meta property="og:title" content="Currency Converter" />
+        <meta
+          property="og:description"
+          content={`Convert ${fromCurrency} to ${toCurrency} with real-time exchange rates.`}
+        />
+        <meta property="og:type" content="website" />
+      </Head>
+      <main>
+        <div
+          style={{
+            width: "100%",
+            height: `${loading ? "100vh" : "100%"}`,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: `${loading ? "center" : "space-between"}`,
+            alignItems: "center",
+            gap: "30px",
+            margin: "30px 0 30px 0",
+          }}
+        >
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontSize: {
+                    xs: "1.5rem",
+                    sm: "2rem",
+                    md: "2.5rem",
+                    lg: "3rem",
                   },
-                  "&.Mui-focused": {
-                    backgroundColor: "white",
-                  },
-                  "&:before": {
-                    display: "none",
-                  },
-                  "&:after": {
-                    display: "none",
-                  },
-                },
-              }}
-            />
+                }}
+              >{`Convert ${fromCurrency} to ${toCurrency}`}</Typography>
 
-            {/* nested box invisible */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: {
-                  xs: "end",
-                },
-
-                flexDirection: {
-                  xs: "column",
-                  md: "row",
-                },
-                gap: {
-                  xs: "10px",
-                  sm: "10px",
-                  md: "20px",
-                  lg: "20px",
-                },
-              }}
-            >
-              {/* currency from wich should start converting */}
-              <FormControl>
-                <InputLabel id="from-label-id">From</InputLabel>
-                <Select
-                  labelId="from-label-id"
-                  id="from-id"
-                  label="from"
-                  value={fromCurrency}
-                  onChange={(e) => setFromCurrency(e.target.value)}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "4px",
+                }}
+              >
+                <Typography
                   sx={{
-                    minWidth: {
-                      xs: "20rem",
-                      sm: "20rem",
-                      md: "20.7rem",
-                      lg: "20.7rem",
+                    textAlign: "center",
+                    fontSize: {
+                      xs: "12px",
                     },
                   }}
                 >
-                  {mergedCurrencyList.map((currency, index) => (
-                    <MenuItem key={`from-${index}`} value={currency}>
-                      {currency}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  {`Last update: ${currenciesData?.time_last_update_utc}`}
+                </Typography>
 
-              {/* button that swaps the inputes */}
-              <SwapButton onClick={handleSwap} />
-
-              {/* currency to wich should be converted */}
-              <FormControl>
-                <InputLabel id="to-label-id">To</InputLabel>
-                <Select
-                  labelId="to-label-id"
-                  id="to-id"
-                  label="from"
-                  value={toCurrency}
-                  onChange={(e) => setToCurrency(e.target.value)}
+                <Typography
                   sx={{
-                    minWidth: {
-                      xs: "20rem",
-                      sm: "20rem",
-                      md: "20.7rem",
-                      lg: "20.7rem",
+                    textAlign: "center",
+                    fontSize: {
+                      xs: "12px",
                     },
                   }}
                 >
-                  {mergedCurrencyList.map((currency, index) => (
-                    <MenuItem key={`to-${index}`} value={currency}>
-                      {currency}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <Typography
-              sx={{
-                width: "50%",
-                textAlign: "center",
-                fontSize: {
-                  xs: "11px",
-                  sm: "13px",
-                  md: "14px",
-                  lg: "16px",
-                },
-              }}
-            >
-              This currency converter provides approximate exchange rates for
-              general reference only.
-            </Typography>
-          </Box>
-        </>
-      )}
-    </div>
+                  {`Next update: ${currenciesData?.time_next_update_utc}`}
+                </Typography>
+              </Box>
+
+              {/* main box */}
+              <Box
+                sx={{
+                  width: {
+                    xs: "98%",
+                    sm: "90%",
+                  },
+                  height: "25rem",
+                  border: "3px solid #00214A",
+                  borderRadius: "20px",
+                  padding: "4rem 1rem 3.5rem 1rem",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  gap: "20px",
+                }}
+              >
+                <ConvertedAmount
+                  currencies={currencyList}
+                  toCurrency={toCurrency}
+                  convertedAmount={convertedAmount}
+                />
+
+                {/* amount text field */}
+                <TextField
+                  id="amount"
+                  label="Amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  type="number"
+                  sx={{
+                    width: {
+                      xs: "20rem",
+                      sm: "20rem",
+                      md: "45.5rem",
+                      lg: "45.5rem",
+                    },
+                    borderRadius: "4px",
+                    backgroundColor: "white",
+                    "& .MuiFilledInput-root": {
+                      backgroundColor: "white",
+                      "&:hover": {
+                        backgroundColor: "white",
+                      },
+                      "&.Mui-focused": {
+                        backgroundColor: "white",
+                      },
+                      "&:before": {
+                        display: "none",
+                      },
+                      "&:after": {
+                        display: "none",
+                      },
+                    },
+                  }}
+                />
+
+                {/* nested box invisible */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: {
+                      xs: "end",
+                    },
+
+                    flexDirection: {
+                      xs: "column",
+                      md: "row",
+                    },
+                    gap: {
+                      xs: "10px",
+                      sm: "10px",
+                      md: "20px",
+                      lg: "20px",
+                    },
+                  }}
+                >
+                  {/* currency from wich should start converting */}
+                  <FormControl>
+                    <InputLabel id="from-label-id">From</InputLabel>
+                    <Select
+                      labelId="from-label-id"
+                      id="from-id"
+                      label="from"
+                      value={fromCurrency}
+                      onChange={(e) => setFromCurrency(e.target.value)}
+                      sx={{
+                        minWidth: {
+                          xs: "20rem",
+                          sm: "20rem",
+                          md: "20.7rem",
+                          lg: "20.7rem",
+                        },
+                      }}
+                    >
+                      {mergedCurrencyList.map((currency, index) => (
+                        <MenuItem key={`from-${index}`} value={currency}>
+                          {currency}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  {/* button that swaps the inputes */}
+                  <SwapButton onClick={handleSwap} />
+
+                  {/* currency to wich should be converted */}
+                  <FormControl>
+                    <InputLabel id="to-label-id">To</InputLabel>
+                    <Select
+                      labelId="to-label-id"
+                      id="to-id"
+                      label="from"
+                      value={toCurrency}
+                      onChange={(e) => setToCurrency(e.target.value)}
+                      sx={{
+                        minWidth: {
+                          xs: "20rem",
+                          sm: "20rem",
+                          md: "20.7rem",
+                          lg: "20.7rem",
+                        },
+                      }}
+                    >
+                      {mergedCurrencyList.map((currency, index) => (
+                        <MenuItem key={`to-${index}`} value={currency}>
+                          {currency}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Typography
+                  sx={{
+                    width: "50%",
+                    textAlign: "center",
+                    fontSize: {
+                      xs: "11px",
+                      sm: "13px",
+                      md: "14px",
+                      lg: "16px",
+                    },
+                  }}
+                >
+                  This currency converter provides approximate exchange rates
+                  for general reference only.
+                </Typography>
+              </Box>
+            </>
+          )}
+        </div>
+      </main>
+    </>
   );
 }
