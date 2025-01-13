@@ -23,6 +23,13 @@ export default function Footer() {
         <Typography>
           © {getCurrentYear()} Exchange App. All rights reserved.
         </Typography>
+        <Typography
+          sx={{
+            fontSize: "12px",
+          }}
+        >
+          Created by Davit Gyulinyan
+        </Typography>
         <Box
           sx={{
             width: "100%",
