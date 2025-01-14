@@ -11,7 +11,7 @@ const Loading = dynamic(() => import("./components/Loading"));
 
 import Head from "next/head";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Home() {
   const [amount, setAmount] = useState<string>("");
@@ -109,14 +109,14 @@ export default function Home() {
     }
   }, [fromCurrency, toCurrency]);
 
-  const handleConvert = (): void => {
+  const handleConvert = useCallback((): void => {
     if (currenciesData && amount) {
       const fromRate = currenciesData.conversion_rates[fromCurrency];
       const toRate = currenciesData.conversion_rates[toCurrency];
       const convertedValue = (parseFloat(amount) / fromRate) * toRate;
-      setConvertedAmount(convertedValue.toFixed(2));
+      setConvertedAmount(convertedValue.toFixed(0));
     }
-  };
+  }, [currenciesData, amount, fromCurrency, toCurrency]);
 
   useEffect(() => {
     handleConvert();
