@@ -50,6 +50,7 @@ export default function Footer() {
         <MaterialUI.Box
           sx={{
             width: "100%",
+            marginTop: "20px",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -60,7 +61,6 @@ export default function Footer() {
           <MaterialUI.Typography
             sx={{
               fontSize: "14px",
-              marginBottom: "5px",
             }}
           >
             Looking for a skilled developer?

@@ -50,7 +50,6 @@ export default function Home() {
         })
         .then((data) => {
           setCurrenciesData(data);
-          console.log(data);
           if (typeof window !== "undefined") {
             const storedHistory = JSON.parse(
               localStorage.getItem("currencyHistory") || "[]"
@@ -242,10 +241,11 @@ export default function Home() {
                 sx={{
                   fontSize: {
                     xs: "1.5rem",
-                    sm: "2rem",
-                    md: "2.5rem",
-                    lg: "3rem",
+                    sm: "1.5rem",
+                    md: "2rem",
+                    lg: "2.5rem",
                   },
+                  fontWeight: "500",
                 }}
               >
                 {`Convert ${fromCurrency} to ${toCurrency}`}
