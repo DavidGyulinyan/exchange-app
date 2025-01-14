@@ -288,7 +288,7 @@ export default function Home() {
                     xs: "98%",
                     sm: "90%",
                   },
-                  height: "25rem",
+                  minHeight: "25rem",
                   border: "3px solid #00214A",
                   borderRadius: "20px",
                   padding: "4rem 1rem 3.5rem 1rem",
