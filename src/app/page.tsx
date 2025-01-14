@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 // Lazy load components
 const ConvertedAmount = dynamic(() => import("./components/ConvertedAmount"));
 const SwapButton = dynamic(() => import("./components/SwapButton"));
-const Loading = dynamic(() => import("./components/Loading"));
 
 import Head from "next/head";
 
@@ -219,7 +218,6 @@ export default function Home() {
           }}
         />
       </Head>
-      ;
       <main>
         <div
           style={{
@@ -234,7 +232,20 @@ export default function Home() {
           }}
         >
           {loading ? (
-            <Loading />
+            <MaterialUI.Typography
+              variant="h2"
+              sx={{
+                fontSize: {
+                  xs: "1.5rem",
+                  sm: "2rem",
+                  md: "2.5rem",
+                  lg: "3rem",
+                },
+                color: "#444",
+              }}
+            >
+              Preparing the currency converter...
+            </MaterialUI.Typography>
           ) : (
             <>
               <MaterialUI.Typography
@@ -247,7 +258,9 @@ export default function Home() {
                     lg: "3rem",
                   },
                 }}
-              >{`Convert ${fromCurrency} to ${toCurrency}`}</MaterialUI.Typography>
+              >
+                {`Convert ${fromCurrency} to ${toCurrency}`}
+              </MaterialUI.Typography>
 
               <MaterialUI.Box
                 sx={{
