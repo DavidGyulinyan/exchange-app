@@ -160,21 +160,62 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>
-          Currency Converter - Convert {fromCurrency} to {toCurrency}
-        </title>
+        <title>{`Convert ${fromCurrency} to ${toCurrency} | Real-Time Currency Exchange`}</title>
         <meta
           name="description"
-          content={`Convert ${fromCurrency} to ${toCurrency} with real-time exchange rates. Easy and accurate currency conversion.`}
+          content={`Easily convert ${fromCurrency} to ${toCurrency} using our real-time currency converter. Get up-to-date exchange rates and accurate conversions.`}
+        />
+        <meta
+          name="keywords"
+          content={`convert ${fromCurrency} to ${toCurrency}, real-time currency converter, ${fromCurrency} to ${toCurrency} exchange rates, currency conversion tool`}
         />
         <link rel="canonical" href="https://ratesnap.netlify.app/" />
-        <meta property="og:title" content="Currency Converter" />
+
+        {/* Open Graph Meta Tags */}
+        <meta
+          property="og:title"
+          content={`Convert ${fromCurrency} to ${toCurrency} | Real-Time Exchange`}
+        />
         <meta
           property="og:description"
-          content={`Convert ${fromCurrency} to ${toCurrency} with real-time exchange rates.`}
+          content={`Use our real-time currency converter to easily convert ${fromCurrency} to ${toCurrency} with accurate exchange rates.`}
         />
+        <meta property="og:url" content="https://ratesnap.netlify.app/" />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://ratesnap.netlify.app/" />
+
+        {/* Twitter Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={`Convert ${fromCurrency} to ${toCurrency}`}
+        />
+        <meta
+          name="twitter:description"
+          content={`Real-time currency exchange rates to convert ${fromCurrency} to ${toCurrency}. Easy and accurate conversions.`}
+        />
+        <meta name="twitter:image" content="https://ratesnap.netlify.app" />
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              name: `Convert ${fromCurrency} to ${toCurrency}`,
+              description: `Easily convert ${fromCurrency} to ${toCurrency} with real-time exchange rates.`,
+              url: "https://ratesnap.netlify.app/",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://ratesnap.netlify.app/",
+                "query-input": "required name=query",
+              },
+            }),
+          }}
+        />
       </Head>
+      ;
       <main>
         <div
           style={{
