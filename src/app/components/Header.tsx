@@ -30,8 +30,8 @@ export default function Header() {
       <MaterialUI.Box
         sx={{
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: "start",
+          alignItems: "start",
           flexDirection: "column",
         }}
       >
