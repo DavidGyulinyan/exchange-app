@@ -24,7 +24,9 @@ export default function ConvertedAmount({
     <MaterialUI.Typography
       variant="h5"
       sx={{
+        width: "100%",
         textAlign: "center",
+        overflowWrap: "break-word",
         fontSize: {
           xs: "20px",
         },
