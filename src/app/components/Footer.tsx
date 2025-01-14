@@ -50,8 +50,11 @@ export default function Footer() {
         <MaterialUI.Box
           sx={{
             width: "100%",
-            marginTop: "15px",
-            textAlign: "center",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexDirection: "column",
+            gap: "5px",
           }}
         >
           <MaterialUI.Typography
@@ -63,7 +66,7 @@ export default function Footer() {
             Looking for a skilled developer?
           </MaterialUI.Typography>
           <MaterialUI.Link
-            href="mailto:gyulinyand@gmail.com"
+            href="mailto:gyulinyand@gmail.com?subject=interested"
             sx={{
               fontSize: "14px",
               color: "#4CAF50",
@@ -73,6 +76,18 @@ export default function Footer() {
             }}
           >
             Contact me at gyulinyand@gmail.com
+          </MaterialUI.Link>
+          <MaterialUI.Link
+            href="tel:+37441855800"
+            sx={{
+              fontSize: "14px",
+              color: "#4CAF50",
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            Call us at +37441855800
           </MaterialUI.Link>
         </MaterialUI.Box>
       </MaterialUI.Box>
