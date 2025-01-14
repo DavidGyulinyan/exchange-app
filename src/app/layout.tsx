@@ -1,8 +1,8 @@
 "use client";
+import * as MaterialUI from "@mui/material";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import "./globals.css";
-import { CssBaseline, ThemeProvider } from "@mui/material";
 import fontTheme from "./theme/fontTheme";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -15,12 +15,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider theme={fontTheme}>
-          <CssBaseline />
+        <MaterialUI.ThemeProvider theme={fontTheme}>
+          <MaterialUI.CssBaseline />
           <Header />
           {children}
           <Footer />
-        </ThemeProvider>
+        </MaterialUI.ThemeProvider>
       </body>
     </html>
   );

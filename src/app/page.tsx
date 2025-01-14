@@ -1,22 +1,17 @@
 "use client";
-
-import {
-  Box,
-  Typography,
-  Select,
-  MenuItem,
-  TextField,
-  FormControl,
-  InputLabel,
-} from "@mui/material";
+import * as MaterialUI from "@mui/material";
 
 import "@fontsource/roboto";
-import ConvertedAmount from "./components/ConvertedAmount";
-import SwapButton from "./components/SwapButton";
+import dynamic from "next/dynamic";
+
+// Lazy load components
+const ConvertedAmount = dynamic(() => import("./components/ConvertedAmount"));
+const SwapButton = dynamic(() => import("./components/SwapButton"));
+const Loading = dynamic(() => import("./components/Loading"));
+
 import Head from "next/head";
 
 import { useEffect, useState } from "react";
-import Loading from "./components/Loading";
 
 export default function Home() {
   const [amount, setAmount] = useState<string>("");
@@ -55,6 +50,7 @@ export default function Home() {
         })
         .then((data) => {
           setCurrenciesData(data);
+          console.log(data);
           if (typeof window !== "undefined") {
             const storedHistory = JSON.parse(
               localStorage.getItem("currencyHistory") || "[]"
@@ -170,6 +166,13 @@ export default function Home() {
           content={`convert ${fromCurrency} to ${toCurrency}, real-time currency converter, ${fromCurrency} to ${toCurrency} exchange rates, currency conversion tool`}
         />
         <link rel="canonical" href="https://ratesnap.netlify.app/" />
+        <link
+          rel="preload"
+          href="/path-to-font.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
 
         {/* Open Graph Meta Tags */}
         <meta
@@ -198,6 +201,7 @@ export default function Home() {
 
         {/* Structured Data */}
         <script
+          defer
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -233,7 +237,7 @@ export default function Home() {
             <Loading />
           ) : (
             <>
-              <Typography
+              <MaterialUI.Typography
                 variant="h2"
                 sx={{
                   fontSize: {
@@ -243,16 +247,16 @@ export default function Home() {
                     lg: "3rem",
                   },
                 }}
-              >{`Convert ${fromCurrency} to ${toCurrency}`}</Typography>
+              >{`Convert ${fromCurrency} to ${toCurrency}`}</MaterialUI.Typography>
 
-              <Box
+              <MaterialUI.Box
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   gap: "4px",
                 }}
               >
-                <Typography
+                <MaterialUI.Typography
                   sx={{
                     textAlign: "center",
                     fontSize: {
@@ -261,9 +265,9 @@ export default function Home() {
                   }}
                 >
                   {`Last update: ${currenciesData?.time_last_update_utc}`}
-                </Typography>
+                </MaterialUI.Typography>
 
-                <Typography
+                <MaterialUI.Typography
                   sx={{
                     textAlign: "center",
                     fontSize: {
@@ -272,11 +276,11 @@ export default function Home() {
                   }}
                 >
                   {`Next update: ${currenciesData?.time_next_update_utc}`}
-                </Typography>
-              </Box>
+                </MaterialUI.Typography>
+              </MaterialUI.Box>
 
               {/* main box */}
-              <Box
+              <MaterialUI.Box
                 sx={{
                   width: {
                     xs: "98%",
@@ -302,7 +306,7 @@ export default function Home() {
                 />
 
                 {/* amount text field */}
-                <TextField
+                <MaterialUI.TextField
                   id="amount"
                   label="Amount"
                   value={amount}
@@ -330,7 +334,7 @@ export default function Home() {
                 />
 
                 {/* nested box invisible */}
-                <Box
+                <MaterialUI.Box
                   sx={{
                     display: "flex",
                     alignItems: {
@@ -350,9 +354,11 @@ export default function Home() {
                   }}
                 >
                   {/* currency from wich should start converting */}
-                  <FormControl>
-                    <InputLabel id="from-label-id">From</InputLabel>
-                    <Select
+                  <MaterialUI.FormControl>
+                    <MaterialUI.InputLabel id="from-label-id">
+                      From
+                    </MaterialUI.InputLabel>
+                    <MaterialUI.Select
                       labelId="from-label-id"
                       id="from-id"
                       label="from"
@@ -368,20 +374,25 @@ export default function Home() {
                       }}
                     >
                       {mergedCurrencyList.map((currency, index) => (
-                        <MenuItem key={`from-${index}`} value={currency}>
+                        <MaterialUI.MenuItem
+                          key={`from-${index}`}
+                          value={currency}
+                        >
                           {currency}
-                        </MenuItem>
+                        </MaterialUI.MenuItem>
                       ))}
-                    </Select>
-                  </FormControl>
+                    </MaterialUI.Select>
+                  </MaterialUI.FormControl>
 
                   {/* button that swaps the inputes */}
                   <SwapButton onClick={handleSwap} />
 
                   {/* currency to wich should be converted */}
-                  <FormControl>
-                    <InputLabel id="to-label-id">To</InputLabel>
-                    <Select
+                  <MaterialUI.FormControl>
+                    <MaterialUI.InputLabel id="to-label-id">
+                      To
+                    </MaterialUI.InputLabel>
+                    <MaterialUI.Select
                       labelId="to-label-id"
                       id="to-id"
                       label="from"
@@ -397,14 +408,17 @@ export default function Home() {
                       }}
                     >
                       {mergedCurrencyList.map((currency, index) => (
-                        <MenuItem key={`to-${index}`} value={currency}>
+                        <MaterialUI.MenuItem
+                          key={`to-${index}`}
+                          value={currency}
+                        >
                           {currency}
-                        </MenuItem>
+                        </MaterialUI.MenuItem>
                       ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Typography
+                    </MaterialUI.Select>
+                  </MaterialUI.FormControl>
+                </MaterialUI.Box>
+                <MaterialUI.Typography
                   sx={{
                     width: "50%",
                     textAlign: "center",
@@ -418,8 +432,8 @@ export default function Home() {
                 >
                   This currency converter provides approximate exchange rates
                   for general reference only.
-                </Typography>
-              </Box>
+                </MaterialUI.Typography>
+              </MaterialUI.Box>
             </>
           )}
         </div>

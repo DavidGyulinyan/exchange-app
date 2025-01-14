@@ -1,4 +1,4 @@
-import { Box, Typography, Link } from "@mui/material";
+import * as MaterialUI from "@mui/material";
 
 export default function Footer() {
   function getCurrentYear(): number {
@@ -8,7 +8,7 @@ export default function Footer() {
 
   return (
     <>
-      <Box
+      <MaterialUI.Box
         sx={{
           width: "100%",
           height: "150px",
@@ -20,17 +20,17 @@ export default function Footer() {
           color: "white",
         }}
       >
-        <Typography>
+        <MaterialUI.Typography>
           © {getCurrentYear()} Exchange App. All rights reserved.
-        </Typography>
-        <Typography
+        </MaterialUI.Typography>
+        <MaterialUI.Typography
           sx={{
             fontSize: "12px",
           }}
         >
           Created by Davit Gyulinyan
-        </Typography>
-        <Box
+        </MaterialUI.Typography>
+        <MaterialUI.Box
           sx={{
             width: "100%",
             height: "10px",
@@ -39,16 +39,16 @@ export default function Footer() {
             marginTop: "15px",
           }}
         >
-          <Link
+          <MaterialUI.Link
             href="https://docs.google.com/document/d/e/2PACX-1vSqgDzlbEnxw-KoCS6ecj_tGzjSlkxDc7bUBMwzor65LKNLTEqzxm4q2iVvStCkmzo4N6dnVlcRGRuo/pub"
             sx={{
               fontSize: "12px",
             }}
           >
             Terms of use
-          </Link>
-        </Box>
-      </Box>
+          </MaterialUI.Link>
+        </MaterialUI.Box>
+      </MaterialUI.Box>
     </>
   );
 }

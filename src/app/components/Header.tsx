@@ -1,9 +1,9 @@
-import { Box, Typography } from "@mui/material";
+import * as MaterialUI from "@mui/material";
 import CurrencyIcon from "../components/CurrencyIcon";
 
 export default function Header() {
   return (
-    <Box
+    <MaterialUI.Box
       sx={{
         width: "100%",
         height: "200px",
@@ -27,7 +27,7 @@ export default function Header() {
           throw new Error("Function not implemented.");
         }}
       />
-      <Box
+      <MaterialUI.Box
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -35,7 +35,7 @@ export default function Header() {
           flexDirection: "column",
         }}
       >
-        <Typography
+        <MaterialUI.Typography
           sx={{
             fontSize: {
               xs: "25px",
@@ -46,8 +46,8 @@ export default function Header() {
           }}
         >
           RateSnap
-        </Typography>
-        <Typography
+        </MaterialUI.Typography>
+        <MaterialUI.Typography
           sx={{
             fontSize: {
               xs: "10px",
@@ -58,8 +58,8 @@ export default function Header() {
           }}
         >
           Best Exchange Rates
-        </Typography>
-      </Box>
-    </Box>
+        </MaterialUI.Typography>
+      </MaterialUI.Box>
+    </MaterialUI.Box>
   );
 }
