@@ -11,7 +11,7 @@ export default function Footer() {
       <MaterialUI.Box
         sx={{
           width: "100%",
-          height: "150px",
+          height: "200px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -33,7 +33,6 @@ export default function Footer() {
         <MaterialUI.Box
           sx={{
             width: "100%",
-            height: "10px",
             display: "flex",
             justifyContent: "center",
             marginTop: "15px",
@@ -46,6 +45,34 @@ export default function Footer() {
             }}
           >
             Terms of use
+          </MaterialUI.Link>
+        </MaterialUI.Box>
+        <MaterialUI.Box
+          sx={{
+            width: "100%",
+            marginTop: "15px",
+            textAlign: "center",
+          }}
+        >
+          <MaterialUI.Typography
+            sx={{
+              fontSize: "14px",
+              marginBottom: "5px",
+            }}
+          >
+            Looking for a skilled developer?
+          </MaterialUI.Typography>
+          <MaterialUI.Link
+            href="mailto:gyulinyand@gmail.com"
+            sx={{
+              fontSize: "14px",
+              color: "#4CAF50",
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            Contact me at gyulinyand@gmail.com
           </MaterialUI.Link>
         </MaterialUI.Box>
       </MaterialUI.Box>
