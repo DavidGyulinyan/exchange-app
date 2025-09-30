@@ -17,9 +17,10 @@ export default function Header() {
           lg: "row",
         },
         gap: "10px",
-        bgcolor: "#00214A",
+        background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
         color: "white",
         fontFamily: "Inter, Arial, sans-serif",
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
       }}
     >
       <CurrencyIcon

@@ -16,8 +16,9 @@ export default function Footer() {
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
-          bgcolor: "#00214A",
+          background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
           color: "white",
+          boxShadow: "0 -4px 6px rgba(0, 0, 0, 0.1)",
         }}
       >
         <MaterialUI.Typography>

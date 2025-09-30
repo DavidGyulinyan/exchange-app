@@ -9,33 +9,51 @@ interface ConvertedAmountProps {
 export default function ConvertedAmount({
   convertedAmount,
 }: ConvertedAmountProps) {
-  // Format the converted amount with thousands separators and a comma as the decimal separator
+  // Format the converted amount with thousands separators
   const formatNumber = (value: number | string): string => {
-    if (isNaN(+value)) return "00.00";
-    const formattedValue = new Intl.NumberFormat("de-DE", {
+    if (isNaN(+value) || +value === 0) return "0";
+    const formattedValue = new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 2,
     }).format(+value);
 
     return formattedValue;
   };
 
   return (
-    <MaterialUI.Typography
-      variant="h5"
+    <MaterialUI.Box
       sx={{
         width: "100%",
+        padding: "1.5rem",
+        borderRadius: "12px",
+        background: "linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%)",
+        border: "2px solid #bae6fd",
         textAlign: "center",
-        overflowWrap: "break-word",
-        fontSize: {
-          xs: "20px",
+        transition: "all 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-2px)",
+          boxShadow: "0 8px 16px rgba(37, 99, 235, 0.15)",
         },
-        color: +convertedAmount < 0 ? "red" : "black",
       }}
     >
-      {+convertedAmount < 0
-        ? "Please enter a valid number"
-        : `Converted Amount: ${formatNumber(convertedAmount)}`}
-    </MaterialUI.Typography>
+      <MaterialUI.Typography
+        variant="h5"
+        sx={{
+          overflowWrap: "break-word",
+          fontSize: {
+            xs: "1.25rem",
+            sm: "1.5rem",
+            md: "1.75rem",
+          },
+          fontWeight: 600,
+          color: +convertedAmount < 0 ? "#dc2626" : "#1e293b",
+          textShadow: +convertedAmount < 0 ? "none" : "0 1px 2px rgba(0, 0, 0, 0.05)",
+        }}
+      >
+        {+convertedAmount < 0
+          ? "Please enter a valid number"
+          : `Converted Amount: ${formatNumber(convertedAmount)}`}
+      </MaterialUI.Typography>
+    </MaterialUI.Box>
   );
 }
