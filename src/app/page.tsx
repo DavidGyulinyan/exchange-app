@@ -7,11 +7,16 @@ import dynamic from "next/dynamic";
 // Lazy load components
 const ConvertedAmount = dynamic(() => import("./components/ConvertedAmount"));
 const SwapButton = dynamic(() => import("./components/SwapButton"));
+const SavedRates = dynamic(() => import("./components/SavedRates"));
+const CurrencySelect = dynamic(() => import("./components/CurrencySelect"));
 
 import Head from "next/head";
 
 import {useCallback, useEffect, useState} from "react";
 import CurrencyConverterSkeleton from "@/app/skeleton/ConverterSkeleton";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import { getUserStorageKey } from "./utils/userUtils";
 
 export default function Home() {
     const [amount, setAmount] = useState<string>("");
@@ -21,6 +26,16 @@ export default function Home() {
     const [toCurrency, setToCurrency] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
     const [currencyList, setCurrencyList] = useState<string[]>([]);
+    const [savedRates, setSavedRates] = useState<SavedRate[]>([]);
+    const [showSavedRates, setShowSavedRates] = useState<boolean>(false);
+
+    interface SavedRate {
+        id: string;
+        fromCurrency: string;
+        toCurrency: string;
+        rate: number;
+        timestamp: number;
+    }
 
     //currencies data interface
     interface Data {
@@ -51,8 +66,9 @@ export default function Home() {
                 .then((data) => {
                     setCurrenciesData(data);
                     if (typeof window !== "undefined") {
+                        const userKey = getUserStorageKey("currencyHistory");
                         const storedHistory = JSON.parse(
-                            localStorage.getItem("currencyHistory") || "[]"
+                            localStorage.getItem(userKey) || "[]"
                         );
                         const initialFromCurrency =
                             storedHistory[0]?.from || Object.keys(data.conversion_rates)[0];
@@ -74,6 +90,60 @@ export default function Home() {
         getExchangeData();
     }, []);
 
+    // Load saved rates from localStorage (user-specific)
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const userKey = getUserStorageKey("savedRates");
+            const stored = localStorage.getItem(userKey);
+            if (stored) {
+                setSavedRates(JSON.parse(stored));
+            }
+        }
+    }, []);
+
+    // Save rate function (user-specific)
+    const handleSaveRate = (): void => {
+        if (!fromCurrency || !toCurrency || !currenciesData) return;
+
+        const fromRate = currenciesData.conversion_rates[fromCurrency];
+        const toRate = currenciesData.conversion_rates[toCurrency];
+        const rate = toRate / fromRate;
+
+        const newRate: SavedRate = {
+            id: `${fromCurrency}-${toCurrency}-${Date.now()}`,
+            fromCurrency,
+            toCurrency,
+            rate,
+            timestamp: Date.now(),
+        };
+
+        const updatedRates = [newRate, ...savedRates].slice(0, 10); // Keep max 10 saved rates
+        setSavedRates(updatedRates);
+        
+        if (typeof window !== "undefined") {
+            const userKey = getUserStorageKey("savedRates");
+            localStorage.setItem(userKey, JSON.stringify(updatedRates));
+        }
+    };
+
+    // Delete saved rate function (user-specific)
+    const handleDeleteRate = (id: string): void => {
+        const updatedRates = savedRates.filter((rate) => rate.id !== id);
+        setSavedRates(updatedRates);
+        
+        if (typeof window !== "undefined") {
+            const userKey = getUserStorageKey("savedRates");
+            localStorage.setItem(userKey, JSON.stringify(updatedRates));
+        }
+    };
+
+    // Select saved rate function
+    const handleSelectRate = (from: string, to: string): void => {
+        setFromCurrency(from);
+        setToCurrency(to);
+        setShowSavedRates(false);
+    };
+
     const handleSwap = (): void => {
         setFromCurrency((prev) => {
             const newFromCurrency = toCurrency;
@@ -89,8 +159,9 @@ export default function Home() {
 
     const updateHistory = (from: string, to: string): void => {
         if (typeof window !== "undefined") {
+            const userKey = getUserStorageKey("currencyHistory");
             const history = JSON.parse(
-                localStorage.getItem("currencyHistory") || "[]"
+                localStorage.getItem(userKey) || "[]"
             );
             const newHistory = [
                 {from, to},
@@ -99,7 +170,7 @@ export default function Home() {
                         entry.from !== from || entry.to !== to
                 ),
             ].slice(0, 5);
-            localStorage.setItem("currencyHistory", JSON.stringify(newHistory));
+            localStorage.setItem(userKey, JSON.stringify(newHistory));
         }
     };
 
@@ -148,7 +219,7 @@ export default function Home() {
 
     const history =
         typeof window !== "undefined"
-            ? JSON.parse(localStorage.getItem("currencyHistory") || "[]")
+            ? JSON.parse(localStorage.getItem(getUserStorageKey("currencyHistory")) || "[]")
             : [];
     const mergedCurrencyList = mergeHistoryWithList(history, currencyList);
 
@@ -240,11 +311,16 @@ export default function Home() {
                                 sx={{
                                     fontSize: {
                                         xs: "1.5rem",
-                                        sm: "1.5rem",
+                                        sm: "1.75rem",
                                         md: "2rem",
                                         lg: "2.5rem",
                                     },
-                                    fontWeight: "500",
+                                    fontWeight: "700",
+                                    background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                                    WebkitBackgroundClip: "text",
+                                    WebkitTextFillColor: "transparent",
+                                    backgroundClip: "text",
+                                    textAlign: "center",
                                 }}
                             >
                                 {`Convert ${fromCurrency} to ${toCurrency}`}
@@ -261,8 +337,11 @@ export default function Home() {
                                     sx={{
                                         textAlign: "center",
                                         fontSize: {
-                                            xs: "12px",
+                                            xs: "0.75rem",
+                                            sm: "0.875rem",
                                         },
+                                        color: "#64748b",
+                                        fontWeight: 500,
                                     }}
                                 >
                                     {`Last update: ${currenciesData?.time_last_update_utc}`}
@@ -272,8 +351,11 @@ export default function Home() {
                                     sx={{
                                         textAlign: "center",
                                         fontSize: {
-                                            xs: "12px",
+                                            xs: "0.75rem",
+                                            sm: "0.875rem",
                                         },
+                                        color: "#64748b",
+                                        fontWeight: 500,
                                     }}
                                 >
                                     {`Next update: ${currenciesData?.time_next_update_utc}`}
@@ -284,20 +366,28 @@ export default function Home() {
                             <MaterialUI.Box
                                 sx={{
                                     width: {
-                                        xs: "98%",
-                                        sm: "90%",
+                                        xs: "95%",
+                                        sm: "85%",
+                                        md: "80%",
                                     },
                                     minHeight: "25rem",
-                                    border: "3px solid #00214A",
-                                    borderRadius: "20px",
-                                    padding: "4rem 1rem 3.5rem 1rem",
-                                    backgroundColor: "#fff",
-                                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                    border: "2px solid #e2e8f0",
+                                    borderRadius: "16px",
+                                    padding: {
+                                        xs: "2rem 1rem",
+                                        md: "3rem 2rem",
+                                    },
+                                    backgroundColor: "#ffffff",
+                                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
                                     flexDirection: "column",
-                                    gap: "20px",
+                                    gap: "24px",
+                                    transition: "all 0.3s ease",
+                                    "&:hover": {
+                                        boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
+                                    },
                                 }}
                             >
                                 <ConvertedAmount
@@ -313,23 +403,31 @@ export default function Home() {
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     type="number"
+                                    variant="outlined"
                                     sx={{
                                         width: {
-                                            xs: "20rem",
+                                            xs: "100%",
                                             sm: "20rem",
                                             md: "45.5rem",
                                             lg: "45.5rem",
                                         },
-                                        borderRadius: "4px",
-                                        backgroundColor: "white",
-                                        "& .MuiFilledInput-root": {
-                                            backgroundColor: "white",
+                                        "& .MuiOutlinedInput-root": {
+                                            borderRadius: "12px",
+                                            backgroundColor: "#f8fafc",
+                                            transition: "all 0.3s ease",
                                             "&:hover": {
-                                                backgroundColor: "white",
+                                                backgroundColor: "#f1f5f9",
+                                                "& .MuiOutlinedInput-notchedOutline": {
+                                                    borderColor: "#2563eb",
+                                                },
                                             },
                                             "&.Mui-focused": {
                                                 backgroundColor: "white",
+                                                boxShadow: "0 0 0 3px rgba(37, 99, 235, 0.1)",
                                             },
+                                        },
+                                        "& .MuiInputLabel-root": {
+                                            fontWeight: 500,
                                         },
                                     }}
                                 />
@@ -354,86 +452,144 @@ export default function Home() {
                                         },
                                     }}
                                 >
-                                    {/* currency from wich should start converting */}
-                                    <MaterialUI.FormControl>
-                                        <MaterialUI.InputLabel id="from-label-id">
-                                            From
-                                        </MaterialUI.InputLabel>
-                                        <MaterialUI.Select
-                                            labelId="from-label-id"
-                                            id="from-id"
-                                            label="from"
-                                            value={fromCurrency}
-                                            onChange={(e) => setFromCurrency(e.target.value)}
-                                            sx={{
-                                                minWidth: {
-                                                    xs: "20rem",
-                                                    sm: "20rem",
-                                                    md: "20.7rem",
-                                                    lg: "20.7rem",
-                                                },
-                                            }}
-                                        >
-                                            {mergedCurrencyList.map((currency, index) => (
-                                                <MaterialUI.MenuItem
-                                                    key={`from-${index}`}
-                                                    value={currency}
-                                                >
-                                                    {currency}
-                                                </MaterialUI.MenuItem>
-                                            ))}
-                                        </MaterialUI.Select>
-                                    </MaterialUI.FormControl>
+                                    {/* currency from which should start converting */}
+                                    <CurrencySelect
+                                        label="From"
+                                        value={fromCurrency}
+                                        onChange={setFromCurrency}
+                                        currencies={mergedCurrencyList}
+                                        labelId="from-label-id"
+                                        id="from-id"
+                                    />
 
-                                    {/* button that swaps the inputes */}
+                                    {/* button that swaps the inputs */}
                                     <SwapButton onClick={handleSwap}/>
 
-                                    {/* currency to wich should be converted */}
-                                    <MaterialUI.FormControl>
-                                        <MaterialUI.InputLabel id="to-label-id">
-                                            To
-                                        </MaterialUI.InputLabel>
-                                        <MaterialUI.Select
-                                            labelId="to-label-id"
-                                            id="to-id"
-                                            label="from"
-                                            value={toCurrency}
-                                            onChange={(e) => setToCurrency(e.target.value)}
-                                            sx={{
-                                                minWidth: {
-                                                    xs: "20rem",
-                                                    sm: "20rem",
-                                                    md: "20.7rem",
-                                                    lg: "20.7rem",
-                                                },
-                                            }}
-                                        >
-                                            {mergedCurrencyList.map((currency, index) => (
-                                                <MaterialUI.MenuItem
-                                                    key={`to-${index}`}
-                                                    value={currency}
-                                                >
-                                                    {currency}
-                                                </MaterialUI.MenuItem>
-                                            ))}
-                                        </MaterialUI.Select>
-                                    </MaterialUI.FormControl>
+                                    {/* currency to which should be converted */}
+                                    <CurrencySelect
+                                        label="To"
+                                        value={toCurrency}
+                                        onChange={setToCurrency}
+                                        currencies={mergedCurrencyList}
+                                        labelId="to-label-id"
+                                        id="to-id"
+                                    />
                                 </MaterialUI.Box>
+
+                                {/* Save Rate Button */}
+                                <MaterialUI.Button
+                                    variant="contained"
+                                    startIcon={<BookmarkAddIcon />}
+                                    onClick={handleSaveRate}
+                                    sx={{
+                                        borderRadius: "12px",
+                                        textTransform: "none",
+                                        fontWeight: 600,
+                                        padding: "10px 24px",
+                                        background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                                        boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+                                        transition: "all 0.3s ease",
+                                        "&:hover": {
+                                            background: "linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)",
+                                            transform: "translateY(-2px)",
+                                            boxShadow: "0 6px 16px rgba(37, 99, 235, 0.4)",
+                                        },
+                                    }}
+                                >
+                                    Save This Rate
+                                </MaterialUI.Button>
+
                                 <MaterialUI.Typography
                                     sx={{
-                                        width: "50%",
+                                        width: {
+                                            xs: "90%",
+                                            sm: "80%",
+                                            md: "60%",
+                                        },
                                         textAlign: "center",
                                         fontSize: {
-                                            xs: "12px",
-                                            sm: "13px",
-                                            md: "14px",
-                                            lg: "16px",
+                                            xs: "0.75rem",
+                                            sm: "0.8125rem",
+                                            md: "0.875rem",
+                                            lg: "1rem",
                                         },
+                                        color: "#64748b",
+                                        fontStyle: "italic",
+                                        marginTop: "0.5rem",
                                     }}
                                 >
                                     This currency converter provides approximate exchange rates
                                     for general reference only.
                                 </MaterialUI.Typography>
+                            </MaterialUI.Box>
+
+                            {/* Saved Rates Section */}
+                            <MaterialUI.Box
+                                sx={{
+                                    width: {
+                                        xs: "95%",
+                                        sm: "85%",
+                                        md: "80%",
+                                    },
+                                    marginTop: "2rem",
+                                }}
+                            >
+                                <MaterialUI.Box
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        marginBottom: "1rem",
+                                    }}
+                                >
+                                    <MaterialUI.Typography
+                                        variant="h5"
+                                        sx={{
+                                            fontSize: {
+                                                xs: "1.25rem",
+                                                md: "1.5rem",
+                                            },
+                                            fontWeight: 600,
+                                            color: "#1e293b",
+                                        }}
+                                    >
+                                        <BookmarkIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+                                        Saved Rates ({savedRates.length})
+                                    </MaterialUI.Typography>
+                                    {savedRates.length > 0 && (
+                                        <MaterialUI.Button
+                                            size="small"
+                                            onClick={() => setShowSavedRates(!showSavedRates)}
+                                            sx={{
+                                                textTransform: "none",
+                                                color: "#2563eb",
+                                            }}
+                                        >
+                                            {showSavedRates ? "Hide" : "Show"}
+                                        </MaterialUI.Button>
+                                    )}
+                                </MaterialUI.Box>
+
+                                <MaterialUI.Collapse in={showSavedRates || savedRates.length === 0}>
+                                    <MaterialUI.Box
+                                        sx={{
+                                            border: "2px solid #e2e8f0",
+                                            borderRadius: "16px",
+                                            padding: {
+                                                xs: "1rem",
+                                                md: "2rem",
+                                            },
+                                            backgroundColor: "#ffffff",
+                                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+                                        }}
+                                    >
+                                        <SavedRates
+                                            savedRates={savedRates}
+                                            onDelete={handleDeleteRate}
+                                            onSelect={handleSelectRate}
+                                        />
+                                    </MaterialUI.Box>
+                                </MaterialUI.Collapse>
                             </MaterialUI.Box>
                         </>
                     )}
