@@ -9,15 +9,9 @@ interface ConvertedAmountProps {
 export default function ConvertedAmount({
   convertedAmount,
 }: ConvertedAmountProps) {
-  // Format the converted amount with thousands separators
   const formatNumber = (value: number | string): string => {
     if (isNaN(+value) || +value === 0) return "0";
-    const formattedValue = new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(+value);
-
-    return formattedValue;
+    return String(value);
   };
 
   return (
@@ -47,7 +41,8 @@ export default function ConvertedAmount({
           },
           fontWeight: 600,
           color: +convertedAmount < 0 ? "#dc2626" : "#1e293b",
-          textShadow: +convertedAmount < 0 ? "none" : "0 1px 2px rgba(0, 0, 0, 0.05)",
+          textShadow:
+            +convertedAmount < 0 ? "none" : "0 1px 2px rgba(0, 0, 0, 0.05)",
         }}
       >
         {+convertedAmount < 0

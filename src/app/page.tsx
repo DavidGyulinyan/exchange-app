@@ -185,7 +185,7 @@ export default function Home() {
             const fromRate = currenciesData.conversion_rates[fromCurrency];
             const toRate = currenciesData.conversion_rates[toCurrency];
             const convertedValue = (parseFloat(amount) / fromRate) * toRate;
-            setConvertedAmount(convertedValue.toFixed(0));
+            setConvertedAmount(convertedValue.toFixed(4));
         }
     }, [currenciesData, amount, fromCurrency, toCurrency]);
 
